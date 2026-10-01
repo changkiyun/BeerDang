@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: beerdang-api
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/beerdang}
+    username: ${DB_USERNAME:beerdang}
+    password: ${DB_PASSWORD:beerdang}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+server:
+  port: 8080
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health

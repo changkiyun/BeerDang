@@ -1,0 +1,81 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - link "맥주당 홈" [ref=e5] [cursor=pointer]:
+      - /url: /
+      - generic [aria-hidden] [ref=e6]: b.
+      - generic [ref=e7]: 맥주당.
+    - generic [ref=e8]: BEER PRICE CALCULATOR
+  - main [ref=e9]:
+    - region [ref=e10]:
+      - generic [ref=e11]: SMARTER BEER SHOPPING
+      - heading [level=1] [ref=e13]:
+        - text: 이 맥주,
+        - emphasis [ref=e14]: 진짜 얼마짜리일까?
+      - paragraph [ref=e15]: 캔 크기도, 묶음 수도 제각각이니까.같은 10ml로 환산하면 가격이 보입니다.
+      - generic [aria-hidden] [ref=e16]:
+        - generic [ref=e17]: PRICE / VOLUME
+        - generic [ref=e18]: 10ml
+        - generic [ref=e19]: 똑똑한 한 잔의 기준
+    - region [ref=e20]:
+      - generic [ref=e21]:
+        - generic [ref=e22]:
+          - paragraph [ref=e23]: 01 — PRICE CHECK
+          - heading "맥주 가격 계산기" [level=2] [ref=e24]
+        - generic [ref=e25]: 실시간 계산
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - generic [ref=e29]: "01"
+          - heading "캔 수" [level=3] [ref=e30]
+          - generic [ref=e31]: 한 묶음에 몇 캔인가요?
+        - group "캔 수" [ref=e32]:
+          - button [pressed] [ref=e33] [cursor=pointer]:
+            - strong [ref=e34]: "4"
+            - text: 캔
+          - button [ref=e35] [cursor=pointer]:
+            - strong [ref=e36]: "6"
+            - text: 캔
+          - button [ref=e37] [cursor=pointer]:
+            - strong [ref=e38]: "8"
+            - text: 캔
+      - generic [ref=e39]:
+        - generic [ref=e40]:
+          - generic [ref=e41]: "02"
+          - heading "캔당 용량" [level=3] [ref=e42]
+          - generic [ref=e43]: 캔 하나의 크기
+        - group "캔당 용량" [ref=e44]:
+          - button [ref=e45] [cursor=pointer]:
+            - strong [ref=e46]: "355"
+            - text: ml
+          - button [ref=e47] [cursor=pointer]:
+            - strong [ref=e48]: "485"
+            - text: ml
+          - button [pressed] [ref=e49] [cursor=pointer]:
+            - strong [ref=e50]: "500"
+            - text: ml
+      - generic [ref=e51]:
+        - generic [ref=e52]:
+          - generic [ref=e53]: "03"
+          - generic [ref=e54]: 묶음 가격
+          - generic [ref=e55]: 전체 가격을 입력하세요
+        - generic [ref=e56]:
+          - textbox "묶음 가격" [ref=e57]:
+            - /placeholder: "예: 12,900"
+          - generic [ref=e58]: 원
+        - paragraph [ref=e59]: 쉼표는 자동으로 입력돼요.
+      - generic [ref=e60]:
+        - generic [ref=e61]:
+          - generic [ref=e62]: YOUR BEER, DECODED
+          - generic [aria-hidden] [ref=e63]: ✳
+        - paragraph [ref=e64]: 이 맥주의 10ml당 가격
+        - paragraph [ref=e65]: 가격을 입력하면바로 계산해 드릴게요.
+        - generic [ref=e67]:
+          - generic [ref=e68]:
+            - text: 총 용량
+            - strong [ref=e69]: 2,000ml
+          - generic [ref=e70]:
+            - text: 묶음 가격
+            - strong [ref=e71]: —
+      - paragraph [ref=e72]: 묶음 가격 ÷ 총 용량 × 10 = 10ml당 가격
+  - contentinfo [ref=e73]:
+    - generic [ref=e74]: 맥주당.
+    - generic [ref=e75]: 가격을 알면, 선택이 쉬워집니다.
