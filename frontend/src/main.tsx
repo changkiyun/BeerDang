@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { createRoot } from 'react-dom/client';
 import { pricePer10ml } from './price';
 import './style.css';
@@ -14,101 +15,137 @@ const unitPrice = new Intl.NumberFormat('ko-KR', {
 function App() {
   const [canCount, setCanCount] = useState<number>(4);
   const [volume, setVolume] = useState<number>(500);
+  const [customCanCount, setCustomCanCount] = useState('');
+  const [customVolume, setCustomVolume] = useState('');
+  const [useCustomCanCount, setUseCustomCanCount] = useState(false);
+  const [useCustomVolume, setUseCustomVolume] = useState(false);
   const [price, setPrice] = useState('');
   const packPrice = Number(price);
-  const result = packPrice > 0 ? pricePer10ml(canCount, volume, packPrice) : null;
+  const selectedCanCount = useCustomCanCount ? Number(customCanCount) : canCount;
+  const selectedVolume = useCustomVolume ? Number(customVolume) : volume;
+  const validCanCount = Number.isInteger(selectedCanCount) && selectedCanCount > 0;
+  const validVolume = Number.isInteger(selectedVolume) && selectedVolume > 0;
+  const totalVolume = validCanCount && validVolume ? selectedCanCount * selectedVolume : null;
+  const result = totalVolume && packPrice > 0 ? pricePer10ml(selectedCanCount, selectedVolume, packPrice) : null;
+
+  function changePrice(event: ChangeEvent<HTMLInputElement>) {
+    const input = event.currentTarget;
+    const digitsBeforeCaret = input.value.slice(0, input.selectionStart ?? 0).replace(/\D/g, '').length;
+    const digits = input.value.replace(/\D/g, '').replace(/^0+(?=\d)/, '').slice(0, 9);
+    setPrice(digits);
+
+    requestAnimationFrame(() => {
+      if (document.activeElement !== input) return;
+      let index = 0;
+      let seen = 0;
+      while (index < input.value.length && seen < digitsBeforeCaret) {
+        if (/\d/.test(input.value[index] ?? '')) seen++;
+        index++;
+      }
+      input.setSelectionRange(index, index);
+    });
+  }
 
   return (
-    <div className="site-shell">
-      <header className="site-header">
-        <a className="brand" href="/" aria-label="맥주당 홈">
-          <span className="brand-mark" aria-hidden="true">b.</span>
-          <span>맥주당<span className="brand-period">.</span></span>
-        </a>
-        <span className="header-note">BEER PRICE CALCULATOR</span>
-      </header>
+    <div className="app">
+      <header className="topbar"><span className="wordmark">맥주당</span></header>
+      <main className="workspace">
+        <div className="page-title">
+          <h1>10ml당 가격 계산</h1>
+          <p>캔 수와 용량이 달라도 같은 기준으로 확인하세요.</p>
+        </div>
 
-      <main className="main-content">
-        <section className="intro" aria-labelledby="page-title">
-          <div className="eyebrow"><span className="eyebrow-line" /> SMARTER BEER SHOPPING</div>
-          <h1 id="page-title">이 맥주,<br /><em>진짜 얼마짜리일까?</em></h1>
-          <p className="intro-copy">캔 크기도, 묶음 수도 제각각이니까.<br />같은 10ml로 환산하면 가격이 보입니다.</p>
-          <div className="intro-decoration" aria-hidden="true">
-            <span className="decoration-top">PRICE / VOLUME</span>
-            <span className="decoration-number">10<span>ml</span></span>
-            <span className="decoration-bottom">똑똑한 한 잔의 기준</span>
-          </div>
-        </section>
+        <div className="calculator-layout">
+          <section className="fields" aria-label="맥주 묶음 정보">
+            <fieldset className="field">
+              <legend>캔 수</legend>
+              <div className="choices">
+                {canCounts.map((count) => (
+                  <button key={count} type="button" className="choice" aria-pressed={!useCustomCanCount && canCount === count} onClick={() => { setCanCount(count); setUseCustomCanCount(false); }}>
+                    {count}<span>캔</span>
+                  </button>
+                ))}
+                <button type="button" className="choice" aria-pressed={useCustomCanCount} onClick={() => setUseCustomCanCount(true)}>기타</button>
+              </div>
+              {useCustomCanCount && (
+                <div className="custom-input">
+                  <input
+                    aria-label="직접 입력할 캔 수"
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="off"
+                    maxLength={3}
+                    placeholder="캔 수 입력"
+                    value={customCanCount}
+                    onChange={(event) => setCustomCanCount(event.target.value.replace(/\D/g, ''))}
+                  />
+                  <span aria-hidden="true">캔</span>
+                </div>
+              )}
+            </fieldset>
 
-        <section className="calculator" aria-labelledby="calculator-title">
-          <div className="calculator-heading">
-            <div>
-              <p className="section-label">01 — PRICE CHECK</p>
-              <h2 id="calculator-title">맥주 가격 계산기</h2>
+            <fieldset className="field">
+              <legend>캔당 용량</legend>
+              <div className="choices">
+                {volumes.map((ml) => (
+                  <button key={ml} type="button" className="choice" aria-pressed={!useCustomVolume && volume === ml} onClick={() => { setVolume(ml); setUseCustomVolume(false); }}>
+                    {ml}<span>ml</span>
+                  </button>
+                ))}
+                <button type="button" className="choice" aria-pressed={useCustomVolume} onClick={() => setUseCustomVolume(true)}>기타</button>
+              </div>
+              {useCustomVolume && (
+                <div className="custom-input">
+                  <input
+                    aria-label="직접 입력할 캔 용량"
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="off"
+                    maxLength={5}
+                    placeholder="용량 입력"
+                    value={customVolume}
+                    onChange={(event) => setCustomVolume(event.target.value.replace(/\D/g, ''))}
+                  />
+                  <span aria-hidden="true">ml</span>
+                </div>
+              )}
+            </fieldset>
+
+            <div className="field price-field">
+              <label htmlFor="pack-price">묶음 가격 <span className="label-hint">캔 전체 가격</span></label>
+              <div className="price-input">
+                <input
+                  id="pack-price"
+                  type="text"
+                  inputMode="numeric"
+                  autoComplete="off"
+                  maxLength={13}
+                  placeholder="가격 입력"
+                  value={price ? currency.format(packPrice) : ''}
+                  onChange={changePrice}
+                />
+                <span aria-hidden="true">원</span>
+              </div>
             </div>
-            <span className="live-badge"><span className="live-dot" /> 실시간 계산</span>
-          </div>
+          </section>
 
-          <div className="field-group">
-            <div className="field-heading"><span className="field-number">01</span><h3 id="count-label">캔 수</h3><span className="field-caption">한 묶음에 몇 캔인가요?</span></div>
-            <div className="choice-grid" role="group" aria-labelledby="count-label">
-              {canCounts.map((count) => (
-                <button key={count} type="button" className={`choice ${canCount === count ? 'selected' : ''}`} aria-pressed={canCount === count} onClick={() => setCanCount(count)}>
-                  <strong>{count}</strong><span>캔</span>
-                </button>
-              ))}
+          <section className="result" aria-labelledby="result-title">
+            <h2 id="result-title">10ml당 가격</h2>
+            <div className="result-display" aria-live="polite" aria-atomic="true">
+              {result === null ? (
+                <p className="result-prompt">묶음 가격을 입력해 주세요.</p>
+              ) : (
+                <p className="result-amount">{unitPrice.format(result)}<span>원</span></p>
+              )}
             </div>
-          </div>
-
-          <div className="field-group">
-            <div className="field-heading"><span className="field-number">02</span><h3 id="volume-label">캔당 용량</h3><span className="field-caption">캔 하나의 크기</span></div>
-            <div className="choice-grid" role="group" aria-labelledby="volume-label">
-              {volumes.map((ml) => (
-                <button key={ml} type="button" className={`choice ${volume === ml ? 'selected' : ''}`} aria-pressed={volume === ml} onClick={() => setVolume(ml)}>
-                  <strong>{ml}</strong><span>ml</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="field-group price-field">
-            <div className="field-heading"><span className="field-number">03</span><label htmlFor="pack-price">묶음 가격</label><span className="field-caption">전체 가격을 입력하세요</span></div>
-            <div className="price-input-wrap">
-              <input
-                id="pack-price"
-                type="text"
-                inputMode="numeric"
-                autoComplete="off"
-                maxLength={13}
-                placeholder="예: 12,900"
-                value={price ? currency.format(packPrice) : ''}
-                onChange={(event) => setPrice(event.target.value.replace(/\D/g, '').replace(/^0+(?=\d)/, '').slice(0, 9))}
-                aria-describedby="price-hint"
-              />
-              <span className="currency-suffix">원</span>
-            </div>
-            <p id="price-hint" className="input-hint">쉼표는 자동으로 입력돼요.</p>
-          </div>
-
-          <div className="result-card" aria-live="polite" aria-atomic="true">
-            <div className="result-topline"><span>YOUR BEER, DECODED</span><span className="result-spark" aria-hidden="true">✳</span></div>
-            <p className="result-label">이 맥주의 10ml당 가격</p>
-            {result === null ? (
-              <p className="result-empty">가격을 입력하면<br />바로 계산해 드릴게요.</p>
-            ) : (
-              <p className="result-value">{unitPrice.format(result)}<span>원 <small>/ 10ml</small></span></p>
-            )}
-            <div className="result-divider" />
-            <div className="result-details">
-              <span>총 용량 <strong>{currency.format(canCount * volume)}ml</strong></span>
-              <span>묶음 가격 <strong>{result === null ? '—' : `${currency.format(packPrice)}원`}</strong></span>
-            </div>
-          </div>
-          <p className="formula-note">묶음 가격 ÷ 총 용량 × 10 = 10ml당 가격</p>
-        </section>
+            <dl className="result-info">
+              <div><dt>총 용량</dt><dd>{totalVolume ? `${currency.format(totalVolume)}ml` : '—'}</dd></div>
+              <div><dt>묶음 가격</dt><dd>{result === null ? '—' : `${currency.format(packPrice)}원`}</dd></div>
+            </dl>
+            <p className="formula">묶음 가격 ÷ 총 용량 × 10</p>
+          </section>
+        </div>
       </main>
-
-      <footer className="site-footer"><span>맥주당<span className="brand-period">.</span></span><span>가격을 알면, 선택이 쉬워집니다.</span></footer>
     </div>
   );
 }

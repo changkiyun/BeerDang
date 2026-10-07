@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-07T07:00:23Z",
+  "title": "Design System: BeerDang",
+  "extensions": {
+    "breakpoints": [
+      { "name": "mobile", "value": "720px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Selection button",
+      "kind": "button",
+      "description": "Choose can count or volume.",
+      "html": "<button class=\"ds-choice\" aria-pressed=\"true\">4캔</button>",
+      "css": ".ds-choice { min-height: 56px; padding: 0 16px; border: 1px solid #1467b6; border-radius: 9px; background: #edf5ff; color: #075aa4; font-weight: 700; cursor: pointer; } .ds-choice:hover { background: #dcecff; } .ds-choice:focus-visible { outline: 3px solid #7cb2ed; outline-offset: 2px; }"
+    },
+    {
+      "name": "Price input",
+      "kind": "input",
+      "description": "Enter the price of the entire pack.",
+      "html": "<input class=\"ds-price\" inputmode=\"numeric\" placeholder=\"가격 입력\" />",
+      "css": ".ds-price { height: 58px; padding: 0 16px; border: 1px solid #a9b7c7; border-radius: 9px; color: #182b3d; font-size: 21px; } .ds-price:focus-visible { outline: 3px solid #7cb2ed; outline-offset: 2px; }"
+    },
+    {
+      "name": "Unit-price result",
+      "kind": "card",
+      "description": "Show the normalized price and inputs used in the calculation.",
+      "html": "<section class=\"ds-result\"><strong>10ml당 가격</strong><p>64.50원</p></section>",
+      "css": ".ds-result { padding: 20px; border: 1px solid #cbdff3; border-radius: 12px; background: #eef5fc; color: #1d2935; } .ds-result p { color: #075aa4; font-size: 34px; font-weight: 800; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "One-screen calculator",
+    "overview": "BeerDang is a utility used while shopping. The calculator and its answer appear immediately; branding, decorative imagery, slogans, and marketing sections do not compete with the task.",
+    "keyCharacteristics": ["Function first", "Clear selection", "Immediate result"],
+    "rules": [],
+    "dos": ["Do put the price input and 10ml answer on the first mobile screen.", "Do keep labels, values, and units unambiguous."],
+    "donts": ["Don't add a hero, badges, decorative graphics, or fake navigation to this working screen."]
+  }
+}
